@@ -157,7 +157,7 @@
 		ethphy0: ethernet-phy@0 {
 			compatible = "ethernet-phy-ieee802.3-c22";
 			reg = <0>;
-			reset-gpios = <&gpio4 22 GPIO_ACTIVE_LOW>;
+			reset-gpios = <&gpio2 10 GPIO_ACTIVE_LOW>;
 			reset-assert-us = <10000>;
 		};
 	};
@@ -404,7 +404,7 @@
 	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
 	pinctrl-1 = <&pinctrl_usdhc2_100mhz>, <&pinctrl_usdhc2_gpio>;
 	pinctrl-2 = <&pinctrl_usdhc2_200mhz>, <&pinctrl_usdhc2_gpio>;
-	cd-gpios = <&gpio1 15 GPIO_ACTIVE_LOW>;
+	cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
 	bus-width = <4>;
 	vmmc-supply = <&reg_usdhc2_vmmc>;
 	status = "okay";
@@ -419,7 +419,7 @@
 
 &lcdif {
 	display = <&display0>;
-	status = "okay";
+	status = "disabled";
 
 	display0: display@0 {
 		bits-per-pixel = <24>;
@@ -428,7 +428,7 @@
 };
 
 &mipi_dsi {
-	status = "okay";
+	status = "disabled";
 
 	port@1 {
 		dsim_to_adv7535: endpoint {
@@ -474,7 +474,7 @@
 			MX8MM_IOMUXC_ENET_RXC_ENET1_RGMII_RXC		0x91
 			MX8MM_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x91
 			MX8MM_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f
-			MX8MM_IOMUXC_SAI2_RXC_GPIO4_IO22		0x19
+			MX8MM_IOMUXC_SD1_RESET_B_GPIO2_IO10		0x19
 		>;
 	};
 
@@ -574,7 +574,7 @@
 
 	pinctrl_usdhc2_gpio: usdhc2grpgpiogrp {
 		fsl,pins = <
-			MX8MM_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x1c4
+			MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12	0x1c4
 		>;
 	};
 
