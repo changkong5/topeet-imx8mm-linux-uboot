@@ -1,0 +1,93 @@
+
+1> cd /home/lsb/Desktop/Desktop/linux-utils-tools/i.MX-8MM/uboot
+
+2> cp /home/lsb/Desktop/Desktop/linux-utils-tools/i.MX-8MM/imx-atf/build/imx8mm/release/bl31.bin .
+
+3> cp /home/lsb/Desktop/Desktop/linux-utils-tools/i.MX-8MM/firmware-imx-8.10/firmware-imx-8.1/firmware/ddr/synopsys/ddr4_dmem_1d.bin .
+   cp /home/lsb/Desktop/Desktop/linux-utils-tools/i.MX-8MM/firmware-imx-8.10/firmware-imx-8.1/firmware/ddr/synopsys/ddr4_dmem_2d.bin .
+   cp /home/lsb/Desktop/Desktop/linux-utils-tools/i.MX-8MM/firmware-imx-8.10/firmware-imx-8.1/firmware/ddr/synopsys/ddr4_imem_1d.bin .
+   cp /home/lsb/Desktop/Desktop/linux-utils-tools/i.MX-8MM/firmware-imx-8.10/firmware-imx-8.1/firmware/ddr/synopsys/ddr4_imem_2d.bin .
+
+
+4> make imx8mm_topeet_defconfig
+
+5> make menuconfig
+
+6> make ATF_LOAD_ADDR=0x920000 flash.bin -j12
+
+make env 
+make envtools
+ln -s /usr/bin/fw_printenv /usr/bin/fw_setenv
+
+make ARCH=arm CROSS_COMPILE=aarch64-linux- envtools
+ln -s fw_printenv fw_setenv
+
+
+sudo dd if=flash.bin of=/dev/sdb bs=1k seek=33 conv=fsync
+
+
+
+make CFLAG=-DDEBUG
+
+iMX8MM u-boot2021.04移植
+https://blog.csdn.net/qq_41256101/article/details/127590200
+
+
+6> make CFLAG=-DDEBUG ATF_LOAD_ADDR=0x920000 flash.bin -j12     // 错误   不能定义DEBUG宏定义
+
+
+
+$ make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- imx8mm_topeet_defconfig
+$ make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- menuconfig
+$ make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- ATF_LOAD_ADDR=0x920000 flash.bin -j12
+
+
+
+
+
+
+
+
+
+3.1 ±àÒëATF
+½øÈëÏÂÔØºÃµÄATFÔ´ÂëÄ¿Â¼£¬Ö´ÐÐÏÂÁÐÃüÁîÍê³É±àÒë¡£
+
+git clone  https://github.com/ARM-software/arm-trusted-firmware.git
+
+
+$ make CROSS_COMPILE=aarch64-linux-gnu- PLAT=imx8mm bl31
+1
+±àÒëÍê³É¿ÉÒÔ¿´µ½ÔÚbuild/imx8mm/releaseÏÂÉú³ÉÁËÎÒÃÇÐèÒªµÄbl31.binÎÄ¼þ£¬½«Õâ¸öÎÄ¼þ¸´ÖÆµ½ubootµÄ±àÒëÄ¿Â¼ÏÂ¡£
+
+
+3.2 ÏÂÔØfirmware-imx
+Ö´ÐÐÏÂÃæÃüÁî£¬ÏÂÔØfirmware-imx£¬»ñÈ¡È¨ÏÞ²¢Ö´ÐÐ»ñÈ¡ËùÐèÎÄ¼þ¡£
+
+$ wget https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/firmware-imx-8.9.bin
+$ chmod +x firmware-imx-8.9.bin
+$ ./firmware-imx-8.9.bin
+
+½øÈëfirmware-imx-8.9/firmware/ddr/synopsysÄ¿Â¼£¬½«ddr4_dmem_1d.bin¡¢ddr4_imem_1d.bin¡¢ddr4_dmem_2d.binºÍddr4_imem_2d.binËÄ¸öÎÄ¼þ¸´ÖÆµ½ubootµÄ±àÒëÄ¿Â¼ÏÂ¡£
+
+3.3 ±àÒëuboot
+½øÈëubootÔ´ÂëÄ¿Â¼£¬È·±£±àÒëËùÐèÎÄ¼þ¶¼ÒÑ¸´ÖÆ¡£
+
+Ö´ÐÐÏÂÁÐÃüÁî£¬Íê³É±àÒë¡£
+
+$ make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- imx8mm_topeet_defconfig
+$ make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- menuconfig
+$ make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- ATF_LOAD_ADDR=0x920000 flash.bin -j12
+
+±àÒëÍê³É£¬Éú³Éflash.binÊÇ´øÓÐIVTµÄ£¬¿ÉÒÔÉÕÐ´¡£
+
+
+3.4 ÏÂÔØÑéÖ¤
+Ê¹ÓÃuuuÆô¶¯uboot£¬½«²¦Âë¿ª¹Ø²¦µ½´®ÐÐÏÂÔØÄ£Ê½£¬Á¬½ÓºÃ´®¿ÚºÍOTG¡£Ö´ÐÐ$ sudo uuu -b emmc flash.binÃüÁî£¬½øÐÐÏÂÔØ¡£(×¢Òâ£ºÏÂÔØµ½SD¿¨Ê¹ÓÃ$ sudo uuu -b sd flash.bin£¬µ«ÊÇCONFIG_SYS_FSL_USDHC_NUMµÃÑ¡ÔñSD¿¨Æô¶¯)
+
+ÏÂÔØÍê³Éºó£¬ÉèÖÃÆô¶¯·½Ê½´ÓEMMCÆô¶¯£¬ÖØÆô¿ª·¢°å¡£
+
+½«ÍøÏßÁ¬½Óµ½Â·ÓÉÆ÷ÉÏ£¬Ö´ÐÐdhcpÃüÁî»ñÈ¡ipµØÖ·£¬²¢ping·þÎñÆ÷²âÊÔÍøÂçÕý³£¡£
+
+
+4. ×Ü½á
+ubootÒÆÖ²Ìí¼ÓÁËºÜ¶à°å¼¶ÎÄ¼þ£¬ÕâÐ©¶¼²»ÊÇÖØÒªµÄ(ÆäËûÐ¾Æ¬¿ÉÄÜÃ»ÓÐÕâÐ©)¡£ÐÞ¸ÄÉè±¸Ê÷ÊÇÒÆÖ²µÄÖØÖÐÖ®ÖØ£¬µ«ÊÇÑ¶Îªi.MX8MM¿ª·¢°åºÍ¹Ù·½EVK¿ª·¢°å±È½Ï½Ó½ü£¬ËùÒÔÐÞ¸Ä±È½Ï¼òµ¥¡£±¾ÎÄ½ö¹©Ñ§Ï°²Î¿¼£¬ÈçÓÐÎÊÌâ»¶Ó­Ö¸Õý¡£

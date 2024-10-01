@@ -1,0 +1,41 @@
+diff --git a/Makefile b/Makefile
+index 0451f445..7e71d893 100644
+--- a/Makefile
++++ b/Makefile
+@@ -263,6 +263,9 @@ ifeq ($(HOSTARCH),$(ARCH))
+ CROSS_COMPILE ?=
+ endif
+ 
++ARCH = arm64
++CROSS_COMPILE = /opt/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
++
+ KCONFIG_CONFIG	?= .config
+ export KCONFIG_CONFIG
+ 
+diff --git a/arch/arm/cpu/armv8/cache_v8.c b/arch/arm/cpu/armv8/cache_v8.c
+index 15cecb5e..89131308 100644
+--- a/arch/arm/cpu/armv8/cache_v8.c
++++ b/arch/arm/cpu/armv8/cache_v8.c
+@@ -16,6 +16,9 @@
+ #include <asm/system.h>
+ #include <asm/armv8/mmu.h>
+ 
++#undef debug
++#define debug(...)
++
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+ #if !CONFIG_IS_ENABLED(SYS_DCACHE_OFF)
+diff --git a/include/log.h b/include/log.h
+index 2d27f9f6..a8141d76 100644
+--- a/include/log.h
++++ b/include/log.h
+@@ -210,6 +210,8 @@ static inline int _log_nop(enum log_category_t cat, enum log_level_t level,
+ 		      __func__, pr_fmt(_fmt), ##_args); \
+ })
+ 
++#define DEBUG 1
++
+ #ifdef DEBUG
+ #define _DEBUG	1
+ #else
